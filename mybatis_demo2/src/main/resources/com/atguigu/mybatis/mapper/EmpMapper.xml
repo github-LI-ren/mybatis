@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.atguigu.mybatis.mapper.EmpMapper">
+
+    <!--    resultType：默认的映射关系-->
+    <!--    resultMap:自定义的映射关系-->
+
+    <select id="getEmpAndDept" resultMap="empWithDept">
+        select * from t_emp left join t_dept on t_emp.did = t_dept.did where eid = #{eid};
+    </select>
+    <resultMap id="empWithDept" type="Emp">
+        <id property="eid" column="eid"/>
+        <result property="ename" column="emp_name"/>
+        <result property="email" column="email"/>
+        <result property="age" column="age"/>
+<!--        处理多对一的关系-->
+        <association property="dept" javaType="Dept">
+            <id property="did" column="did"/>
+            <result property="deptName" column="dept_name"/>
+        </association>
+    </resultMap>
+
+    <select id="getEmpAndDepartment" resultMap="EmpAndDepartment">
+        select * from t_emp where eid = #{eid};
+    </select>
+
+    <resultMap id="EmpAndDepartment" type="Emp">
+        <id property="eid" column="eid"/>
+        <result property="ename" column="emp_name"/>
+        <result property="email" column="email"/>
+        <result property="age" column="age"/>
+<!--        fetchType:在全局开启延迟加载后控制方法的延迟加载和立即加载-->
+        <association property="dept"
+                     select="com.atguigu.mybatis.mapper.DeptMapper.getDeptByDid"
+                     column="did"
+                     fetchType="lazy"
+        />
+    </resultMap>
+
+    <select id="getEmpByDid" resultMap="EmpByDid">
+        select * from  t_emp where did= #{did}
+    </select>
+    <resultMap id="EmpByDid" type="Emp">
+        <id property="eid" column="eid"/>
+        <result property="ename" column="emp_name"/>
+        <result property="email" column="email"/>
+        <result property="age" column="age"/>
+        <!--        fetchType:在全局开启延迟加载后控制方法的延迟加载和立即加载-->
+
+    </resultMap>
+</mapper>

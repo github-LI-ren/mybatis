@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.atguigu.mybatis.mapper.DynamicSQL">
+
+    <!--    resultType：默认的映射关系-->
+    <!--    resultMap:自定义的映射关系-->
+    <select id="getEmpByConditionDemo1" resultMap="Emp">
+        select * from t_emp where 1=1
+        <if test="ename !=null and ename != ''">
+             and emp_name= #{ename}
+        </if>
+        <if test="age != null and age != ''">
+            and age = #{age}
+        </if>
+        <if test="email != null and email != ''">
+            and email = #{email}
+        </if>
+        <if test="dept.did != null">
+            and did = #{dept.did}
+        </if>
+
+    </select>
+    <select id="getEmpByConditionDemo2" resultMap="Emp">
+        select * from t_emp
+        <where>
+            <if test="ename !=null and ename != ''">
+                emp_name= #{ename}
+            </if>
+            <if test="age != null and age != ''">
+                and age = #{age}
+            </if>
+            <if test="email != null and email != ''">
+                and email = #{email}
+            </if>
+            <if test="dept.did == null">
+                and did = #{dept.did}
+            </if>
+        </where>
+    </select>
+    <select id="getEmpByConditionDemo3" resultMap="Emp">
+        select * from t_emp
+        <trim prefix="where" suffixOverrides="and|or">
+            <if test="ename !=null and ename != ''">
+                emp_name= #{ename} or
+            </if>
+            <if test="age != null and age != ''">
+                age = #{age} or
+            </if>
+            <if test="email != null and email != ''">
+                email = #{email} and
+            </if>
+            <if test="dept.did == null">
+                did = #{dept.did}
+            </if>
+        </trim>
+    </select>
+    <select id="getEmpByConditionDemo4" resultMap="Emp">
+        select * from t_emp
+        <trim prefix="where" suffixOverrides="and|or">
+            <choose>
+                <when test="ename !=null and ename != ''">
+                    emp_name= #{ename} or
+                </when>
+                <when test="age !=null and age != ''">
+                    age= #{age} or
+                </when>
+                <when test="ename !=null and ename != ''">
+                    email= #{email} or
+                </when>
+                <when test="dept.did !=null and dept.did != ''">
+                    did= #{dept.did} or
+                </when>
+                <otherwise>
+                    did = 1;
+                </otherwise>
+            </choose>
+<!--            <if test="ename !=null and ename != ''">-->
+<!--                emp_name= #{ename} or-->
+<!--            </if>-->
+<!--            <if test="age != null and age != ''">-->
+<!--                age = #{age} or-->
+<!--            </if>-->
+<!--            <if test="email != null and email != ''">-->
+<!--                email = #{email} and-->
+<!--            </if>-->
+<!--            <if test="dept.did == null">-->
+<!--                did = #{dept.did}-->
+<!--            </if>-->
+        </trim>
+    </select>
+
+    <resultMap id="Emp" type="Emp">
+        <id property="eid" column="eid"/>
+        <result property="ename" column="emp_name"/>
+        <result property="email" column="email"/>
+        <result property="age" column="age"/>
+        <!--        fetchType:在全局开启延迟加载后控制方法的延迟加载和立即加载-->
+
+    </resultMap>
+
+    <delete id="deleteEmpMore">
+        delete from t_emp where eid in
+        (
+            <foreach collection="eids" item="eid" separator=",">
+                #{eid}
+            </foreach>
+        )
+
+    </delete>
+    <insert id="insertEmpMore">
+        insert into t_emp(emp_name,email,age,did)
+     values
+        <foreach collection="emps" item="emp" separator="," close=";">
+            ( #{emp.ename},#{emp.email},#{emp.age},#{emp.dept.did})
+        </foreach>
+    </insert>
+</mapper>

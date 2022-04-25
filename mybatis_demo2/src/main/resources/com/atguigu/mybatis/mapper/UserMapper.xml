@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.atguigu.mybatis.mapper.UserMapper">
+<!--    int insertUser();-->
+    <insert id="insertUser">
+        insert into t_user values(null ,'admin2','asdd',23,'男','22324124@qq.com');
+    </insert>
+    <update id="updateUser">
+        update t_user set name = '张三' where id = 1;
+    </update>
+    <delete id="deleteUser">
+        delete from t_user where id >=1;
+    </delete>
+<!--    resultType：默认的映射关系-->
+<!--    resultMap:自定义的映射关系-->
+    <resultMap id="user" type="user">
+        <id property="id" column="id"/>
+        <id property="username" column="name"/>
+        <id property="password" column="password"/>
+        <id property="age" column="age"/>
+        <id property="sex" column="sex"/>
+        <id property="email" column="email"/>
+    </resultMap>
+    <select id="selectUserById" resultMap="user">
+        select * from t_user where id  = 1;
+    </select>
+    <select id="getAllUser" resultMap="user">
+        select * from t_user;
+    </select>
+</mapper>

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.atguigu.mybatis.mapper.UserParamenter">
+
+    <!--    resultType：默认的映射关系-->
+    <!--    resultMap:自定义的映射关系-->
+
+    <select id="getAll" resultType="map">
+        select id,name,password from t_user;
+    </select>
+    <select id="getAllNameAndPassword" resultType="map">
+        select name,password from t_user;
+    </select>
+    <select id="getParamenters" resultType="map">
+        select name,password from t_user where id = #{id};
+    </select>
+    <insert id="addUser">
+        insert into t_user(name,password) values(#{username},#{password});
+    </insert>
+    <select id="checkLogin" resultMap="user">
+        select * from t_user where name = #{username} and  id =#{id}
+    </select>
+    <select id="getUserByUsernameAndId" resultMap="user">
+        select * from t_user where name = #{arg0} and  id =#{arg1};
+    </select>
+    <select id="getUserByUsername" resultMap="user">
+        select * from t_user where name = #{username};
+    </select>
+    <resultMap id="user" type="user">
+        <id property="id" column="id"/>
+        <id property="username" column="name"/>
+        <id property="password" column="password"/>
+        <id property="age" column="age"/>
+        <id property="sex" column="sex"/>
+        <id property="email" column="email"/>
+    </resultMap>
+
+</mapper>

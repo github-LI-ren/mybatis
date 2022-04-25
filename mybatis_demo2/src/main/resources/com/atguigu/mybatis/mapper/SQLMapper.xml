@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.atguigu.mybatis.mapper.SQLMapper">
+
+    <!--    resultType：默认的映射关系-->
+    <!--    resultMap:自定义的映射关系-->
+    <select id="getUserLike" resultType="map">
+        select name ,password from t_user where name like concat('%',#{username},'%');
+    </select>
+
+    <delete id="deleteMore">
+        delete from t_user where id in(${ids});
+    </delete>
+    <update id="auto_increment">
+        alter table t_user auto_increment =${index};
+    </update>
+    <insert id="insert">
+        insert into t_user(name,password) values (#{username},#{password});
+    </insert>
+<!--useGeneratedKeys声明使用了自增主键,将自增的逐渐赋给指定的字段属性中-->
+    <insert id="insertUser" keyProperty="id" useGeneratedKeys="true">
+        insert into t_user(name,password,age,sex,email) values (#{username},#{password},${age},#{sex},#{email});
+    </insert>
+</mapper>
